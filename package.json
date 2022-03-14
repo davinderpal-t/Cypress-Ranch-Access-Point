@@ -1,0 +1,16 @@
+{
+    "name": "cypressranchaccesspoint",
+    "version": "1.0.0",
+    "description": "",
+    "main": "server.js",
+    "scripts": {},
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.17.3",
+        "express-rate-limit": "^6.3.0",
+        "node-fetch": "^3.2.1",
+        "playwright": "^1.19.2",
+        "worker-farm": "^1.7.0"
+    }
+}
