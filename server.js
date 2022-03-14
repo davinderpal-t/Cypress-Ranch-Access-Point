@@ -30,7 +30,7 @@ app.get("/test", dataLimit, (req, res) => {
     res.json({ "message": "PASSED!" });
 });
 
-app.listen(3000, () => {
+app.listen(process.env.PORT, () => {
     eventLoop = new Farm();
     console.log("Listening at http://localhost:3000");
 });
