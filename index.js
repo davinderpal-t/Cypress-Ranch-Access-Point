@@ -30,7 +30,8 @@ async function main(user, pass) {
     } catch (e) {
         //This happens because of navigation
     }
-
+    if (page.url() == "https://launchpad.classlink.com/cfisd/")
+        return { data: "Something went wrong, your Username and/or Password are likely incorrect.", status: 400 };
     //Start finding the right button to click
     console.time("openHAC");
     let elements = await page.waitForSelector("app-apps-container");
