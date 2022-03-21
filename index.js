@@ -121,7 +121,7 @@ async function main(user, pass) {
 
 async function runner(user, pass) {
     browser = await playwright.chromium.launch({
-        headless: false, // setting this to true will not run the UI
+        headless: true, // setting this to true will not run the UI
         chromiumSandbox: false
     });
     context = await browser.newContext({ viewport: null });
