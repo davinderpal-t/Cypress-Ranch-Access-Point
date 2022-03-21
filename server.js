@@ -14,6 +14,8 @@ const dataLimit = rateLimit({
     }
 })
 
+app.use(express.static("public"));
+
 //Data Limit
 app.use(express.json({ limit: "20kb" }));
 
