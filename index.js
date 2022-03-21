@@ -121,7 +121,7 @@ async function main(user, pass) {
 
 async function runner(user, pass) {
     browser = await playwright.chromium.launch({
-        headless: true, // setting this to true will not run the UI
+        headless: false, // setting this to true will not run the UI
         chromiumSandbox: false
     });
     context = await browser.newContext({ viewport: null });
@@ -131,5 +131,5 @@ async function runner(user, pass) {
 
 module.exports = async function (inp, callback) {
     let data = await runner(inp[0], inp[1]);
-    callback(null, JSON.stringify(data));
+    callback(null, data);
 };
