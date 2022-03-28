@@ -29,7 +29,9 @@ async function main(user, pass) {
         }
     } catch (e) {
         //This happens because of navigation
+        await page.waitForTimeout(500);
     }
+
     if (page.url() == "https://launchpad.classlink.com/cfisd/")
         return { data: "Something went wrong, your Username and/or Password are likely incorrect.", status: 400 };
     //Start finding the right button to click
@@ -64,7 +66,6 @@ async function main(user, pass) {
         return data;
     });
     classArr = [...new Set(classArr)]; //Remove duplicates
-
     //Get IDs
     let idArr = await page.$$eval("#average", async elms => {
         let data = [];
@@ -114,7 +115,7 @@ async function main(user, pass) {
             let weight = (gradeData[i + 1] == "Checking for Understanding") ? dgWeight : (gradeData[i + 1] == "Relevant Applications") ? raWeight : mgWeight;
             grades[id].push(new Grade(gradeData[i], Number(gradeData[i + 2]), gradeData[i + 1], weight, Number(gradeData[i + 3]), Number(gradeData[i + 4])));
         }
-        actualGrades[classArr.indexOf(id) + 1] = [new Average().getAverage(grades[id]), JSON.stringify(grades[id])];
+        actualGrades[classArr[classArr.indexOf(id) + 1]] = [new Average().getAverage(grades[id]), JSON.stringify(grades[id])];
     }
     console.timeEnd("getData");
     await browser.close();
@@ -131,7 +132,7 @@ async function runner(user, pass) {
     return await main(user, pass);
 }
 
-module.exports = async function (inp, callback) {
+module.exports = async function(inp, callback) {
     let data = await runner(inp[0], inp[1]);
     callback(null, data);
 };
