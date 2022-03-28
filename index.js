@@ -56,8 +56,10 @@ async function main(user, pass) {
     let classArr = await page.$$eval("#courseName", async elms => {
         let data = [];
         elms.forEach(async item => {
-            if (item.innerText != "Lunch")
+            if (item.innerText != "Lunch") {
+                data.push(item.getAttribute("href").match(/\d+/)[0]);
                 data.push(item.innerText);
+            }
         });
         return data;
     });
@@ -112,7 +114,7 @@ async function main(user, pass) {
             let weight = (gradeData[i + 1] == "Checking for Understanding") ? dgWeight : (gradeData[i + 1] == "Relevant Applications") ? raWeight : mgWeight;
             grades[id].push(new Grade(gradeData[i], Number(gradeData[i + 2]), gradeData[i + 1], weight, Number(gradeData[i + 3]), Number(gradeData[i + 4])));
         }
-        actualGrades[classArr.shift()] = [new Average().getAverage(grades[id]), JSON.stringify(grades[id])];
+        actualGrades[classArr.indexOf(id) + 1] = [new Average().getAverage(grades[id]), JSON.stringify(grades[id])];
     }
     console.timeEnd("getData");
     await browser.close();
