@@ -11,7 +11,7 @@ let context;
 const Grade = require("./modules/Grade.js");
 
 async function main(user, pass) {
-    //console.time("signIn");
+    console.time("signIn");
     let page = await context.newPage();
     //Start signing in
     await page.goto('https://launchpad.classlink.com/cfisd/');
@@ -19,7 +19,7 @@ async function main(user, pass) {
     await page.fill("#username", user);
     await page.fill("#password", pass);
     await page.click("#signin");
-    //console.timeEnd("signIn");
+    console.timeEnd("signIn");
     await page.waitForTimeout(500);
     let a = page.locator("html body.login-bg.windows div#login_form_action.container.login div.container1 div.row div.col-xs-12 form div.form-group.username-container div.cl-alert.cl-alert-red");
     try {
@@ -32,10 +32,10 @@ async function main(user, pass) {
         await page.waitForTimeout(500);
     }
 
-    if (page.url() == "https://launchpad.classlink.com/cfisd/")
+    if (page.url() == "https://launchpad.classlink.com/cfisd" && await a.isVisible())
         return { data: "Something went wrong, your Username and/or Password are likely incorrect.", status: 400 };
     //Start finding the right button to click
-    //console.time("openHAC");
+    console.time("openHAC");
     let elements = await page.waitForSelector("app-apps-container");
     //await page.screenshot({ path: "./Stuff.png" });
 
@@ -51,8 +51,8 @@ async function main(user, pass) {
     await page.waitForEvent('popup');
     page = context.pages()[2];
     await page.waitForLoadState("domcontentloaded");
-    //console.timeEnd("openHAC");
-    //console.time("getData");
+    console.timeEnd("openHAC");
+    console.time("getData");
 
     //Get Classes
     let classArr = await page.$$eval("#courseName", async elms => {
@@ -117,7 +117,7 @@ async function main(user, pass) {
         }
         actualGrades[classArr[classArr.indexOf(id) + 1]] = [new Average().getAverage(grades[id]), JSON.stringify(grades[id])];
     }
-    //console.timeEnd("getData");
+    console.timeEnd("getData");
     await browser.close();
     return { data: actualGrades, status: 200 };
 }
