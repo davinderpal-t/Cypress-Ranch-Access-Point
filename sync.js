@@ -1,4 +1,3 @@
-const e = require('express');
 let workerFarm = require('worker-farm');
 
 class Farm {
