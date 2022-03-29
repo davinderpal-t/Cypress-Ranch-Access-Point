@@ -1,3 +1,4 @@
+const e = require('express');
 let workerFarm = require('worker-farm');
 
 class Farm {
@@ -14,17 +15,23 @@ class Farm {
             this.workers = workerFarm(require.resolve('./index'));
         }
         return new Promise((res, rej) => {
-            this.open++;
-            this.workers([user, pass], (err, outp) => {
-                this.finished++;
-                if (this.finished == this.open) {
-                    this.open = 0;
-                    this.finished = 0;
-                    workerFarm.end(this.workers);
-                    this.running = false;
-                }
-                res(outp);
-            });
+            if (this.open - this.finished > 1) {
+                setTimeout(() => {
+                    res(this.run(user, pass));
+                }, 1000);
+            } else {
+                this.open++;
+                this.workers([user, pass], (err, outp) => {
+                    this.finished++;
+                    if (this.finished == this.open) {
+                        this.open = 0;
+                        this.finished = 0;
+                        workerFarm.end(this.workers);
+                        this.running = false;
+                    }
+                    res(outp);
+                });
+            }
         });
     }
 }
