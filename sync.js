@@ -15,7 +15,7 @@ class Farm {
             this.workers = workerFarm(require.resolve('./index'));
         }
         return new Promise((res, rej) => {
-            if (this.open - this.finished > 1) {
+            if (this.open - this.finished > 2) {
                 setTimeout(() => {
                     res(this.run(user, pass));
                 }, 1000);
