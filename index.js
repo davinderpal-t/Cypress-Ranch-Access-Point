@@ -27,7 +27,10 @@ async function main(user, pass) {
         }
     } catch (e) {
         //This happens because of navigation
-        await page.waitForTimeout(500);
+        for (let i = 0; i < 8; i++) {
+            if (page.url() == "https://launchpad.classlink.com/cfisd")
+                await page.waitForTimeout(100);
+        }
     }
 
     if (page.url() == "https://launchpad.classlink.com/cfisd" && await a.isVisible())
@@ -73,8 +76,8 @@ async function main(user, pass) {
     });
 
     //Get Grades From Every Pop-up Window
-    let grades = {}; //Object containing array of grades for every class by ID
     let actualGrades = {};
+    let grades = {}; //Object containing array of grades for every class by ID
     for (const id of idArr) {
 
         await page.evaluate(id => { //Opening pages
