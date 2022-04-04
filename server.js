@@ -20,6 +20,7 @@ app.use(express.static("public"));
 app.use(express.json({ limit: "20kb" }));
 
 app.post("/getGrades", dataLimit, async(req, res) => {
+    req.setTimeout(45000);
     let data = req.body;
     let response = { status: 400, data: "Incorrectly formatted Request." };
     if (data.user && data.pass) {
