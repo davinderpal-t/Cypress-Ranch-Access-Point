@@ -36,7 +36,9 @@ async function main(user, pass) {
     if (page.url() == "https://launchpad.classlink.com/cfisd" && await a.isVisible())
         return { data: "Something went wrong, your Username and/or Password are likely incorrect.", status: 400 };
     //Start finding the right button to click
-    let elements = await page.waitForSelector("app-apps-container");
+    let elements = await page.waitForSelector("app-apps-container", {
+        timeout: 5000
+    });
     //await page.screenshot({ path: "./Stuff.png" });
 
     await elements.$$eval("application", elems => {
