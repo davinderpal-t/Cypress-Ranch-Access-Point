@@ -9,7 +9,7 @@ const dataLimit = rateLimit({
     max: 5,
     statusCode: 200,
     message: {
-        status: 429,
+        status: 400,
         error: 'You are doing that too much. Please try again in 1 minute.'
     }
 })
@@ -19,7 +19,7 @@ app.use(express.static("public"));
 //Data Limit
 app.use(express.json({ limit: "20kb" }));
 
-app.post("/getGrades", dataLimit, async (req, res) => {
+app.post("/getGrades", dataLimit, async(req, res) => {
     let data = req.body;
     let response = { status: 400, data: "Incorrectly formatted Request." };
     if (data.user && data.pass) {
