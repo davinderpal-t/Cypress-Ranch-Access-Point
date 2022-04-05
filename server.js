@@ -12,7 +12,7 @@ const checkingLimit = rateLimit({
     statusCode: 400,
     message: {
         status: 400,
-        error: 'You are doing that too much. Please try again in 1 minute.'
+        data: 'You are doing that too much. Please try again in 1 minute.'
     }
 });
 
@@ -22,7 +22,7 @@ const dataLimit = rateLimit({
     statusCode: 400,
     message: {
         status: 400,
-        error: 'You are doing that too much. Please try again in 1 minute.'
+        data: 'You are doing that too much. Please try again in 1 minute.'
     }
 })
 
