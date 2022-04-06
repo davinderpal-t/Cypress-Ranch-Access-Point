@@ -1,4 +1,3 @@
-const e = require("express");
 const express = require("express");
 const app = express();
 const rateLimit = require('express-rate-limit')
@@ -9,20 +8,20 @@ let responseCache = {};
 const checkingLimit = rateLimit({
     windowMs: 60000,
     max: 62,
-    statusCode: 400,
+    statusCode: 200,
     message: {
         status: 400,
-        data: 'You are doing that too much. Please try again in 1 minute.'
+        error: 'You are doing that too much. Please try again in 1 minute.'
     }
 });
 
 const dataLimit = rateLimit({
     windowMs: 60000,
     max: 5,
-    statusCode: 400,
+    statusCode: 200,
     message: {
         status: 400,
-        data: 'You are doing that too much. Please try again in 1 minute.'
+        error: 'You are doing that too much. Please try again in 1 minute.'
     }
 })
 
