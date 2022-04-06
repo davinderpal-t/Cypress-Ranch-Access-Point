@@ -63,6 +63,7 @@ app.post("/fetchGrades", checkingLimit, async(req, res) => {
 });
 
 app.get("/test", dataLimit, (req, res) => {
+    console.log("API Broken on Heroku???");
     res.json({ "message": "PASSED!" });
 });
 
