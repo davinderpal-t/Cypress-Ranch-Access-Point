@@ -4,13 +4,15 @@
 }
 
 body {
-    background-color: #1f1e2c;
+    background-color: #222;
     color: #eee;
     text-align: center;
     font-family: Arial, Helvetica, sans-serif;
 }
 
-header, main, footer {
+header,
+main,
+footer {
     height: 10vh;
     display: flex;
     align-items: center;
@@ -18,11 +20,13 @@ header, main, footer {
     justify-content: center;
 }
 
-header, footer {
-    background-color: #3d3d53;
+header {
+    background-color: #db9c4a;
+    color: black;
 }
 
-header, main {
+header,
+main {
     margin-bottom: 2vh;
 }
 
