@@ -25,6 +25,15 @@ const dataLimit = rateLimit({
     }
 })
 
+app.use((req, res, next) => {
+    res.append('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
+    res.append('X-Content-Type-Options', 'nosniff');
+    res.append('X-Frame-Options', 'DENY');
+    res.append('X-XSS-Protection', '1; mode=block');
+
+    next();
+});
+
 app.use(express.static("public"));
 
 //Data Limit
