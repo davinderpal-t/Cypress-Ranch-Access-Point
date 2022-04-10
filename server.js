@@ -11,7 +11,7 @@ const checkingLimit = rateLimit({
     statusCode: 200,
     message: {
         status: 400,
-        error: 'You are doing that too much. Please try again in 1 minute.'
+        error: 'Please try again in 1 minute.'
     }
 });
 
@@ -21,7 +21,7 @@ const dataLimit = rateLimit({
     statusCode: 200,
     message: {
         status: 400,
-        error: 'You are doing that too much. Please try again in 1 minute.'
+        error: 'Please try again in 1 minute.'
     }
 })
 
@@ -43,7 +43,7 @@ app.post("/getGrades", dataLimit, async(req, res) => {
     if (responseCache[req.body.user] == "Loading") {
         res.json({
             status: 400,
-            data: 'You are doing that too much. Please try again in 1 minute.'
+            data: 'Request in progress.'
         });
         return;
     }
@@ -72,7 +72,6 @@ app.post("/fetchGrades", checkingLimit, async(req, res) => {
 });
 
 app.get("/test", dataLimit, (req, res) => {
-    console.log("API Broken on Heroku???");
     res.json({ "message": "PASSED!" });
 });
 
