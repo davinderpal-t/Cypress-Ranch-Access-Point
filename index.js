@@ -59,6 +59,9 @@ async function main(user, pass) {
     page = context.pages()[2];
     await page.waitForLoadState("domcontentloaded");
 
+    let nameSelect = await page.locator("li.sg-banner-menu-element:nth-child(1) > span:nth-child(1)");
+    const name = await nameSelect.innerText();
+
     //Get Classes
     let classArr = await page.$$eval("#courseName", async elms => {
         let data = [];
@@ -82,15 +85,24 @@ async function main(user, pass) {
         return data;
     });
 
+    let term = await page.$$eval("#average", async elems => {
+        let ret;
+        elems.forEach(async item => {
+            if (item.innerText != "") {
+                ret = Number(item.getAttribute("href").match(/\d+/g)[3]);
+            }
+        });
+        return ret;
+    });
+
     //Get Grades From Every Pop-up Window
     let actualGrades = {};
     let grades = {}; //Object containing array of grades for every class by ID
     for (const id of idArr) {
-
-        await page.evaluate(id => { //Opening pages
-            let f = "/HomeAccess/Content/Student/AssignmentsFromRCPopUp.aspx?section_key=" + id + "&course_session=1&RC_RUN=3&MARK_TITLE=9WK  .Trim()&MARK_TYPE=9WK  .Trim()&SLOT_INDEX=1";
+        await page.evaluate(arr => { //Opening pages
+            let f = "/HomeAccess/Content/Student/AssignmentsFromRCPopUp.aspx?section_key=" + arr[0] + "&course_session=1&RC_RUN=" + arr[1] + "&MARK_TITLE=9WK  .Trim()&MARK_TYPE=9WK  .Trim()&SLOT_INDEX=1";
             window.open(f, "_self", "status=no,menubar=no,toolbar=no,scrollbars=yes,resizable=yes,height=600,width=975");
-        }, id);
+        }, [id, term]);
         //Wait for table to load
         await page.waitForSelector("#plnMain_rptAssigmnetsByCourse_dgCourseAssignments_0 .sg-asp-table-data-row > td:nth-child(3)");
 
@@ -111,19 +123,36 @@ async function main(user, pass) {
 
         //Get Category Weights
         let dgWeight = Number(await page.locator("#plnMain_rptAssigmnetsByCourse_dgCourseCategories_0 > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(5)").innerText());
+        if (dgWeight < 1)
+            dgWeight *= 100;
         let raWeight = Number(await page.locator("#plnMain_rptAssigmnetsByCourse_dgCourseCategories_0 > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(5)").innerText());
+        if (raWeight < 1)
+            raWeight *= 100;
         let mgWeight = Number(await page.locator("#plnMain_rptAssigmnetsByCourse_dgCourseCategories_0 > tbody:nth-child(1) > tr:nth-child(4) > td:nth-child(5)").innerText());
+        if (mgWeight < 1)
+            mgWeight *= 100;
 
         grades[id] = [];
         //Form the array of grades
         for (let i = 0; i + 4 < gradeData.length; i += 5) {
             let weight = (gradeData[i + 1] == "Checking for Understanding") ? dgWeight : (gradeData[i + 1] == "Relevant Applications") ? raWeight : mgWeight;
+            gradeData[i + 1] = gradeData[i + 1].split(" ").map(x => x.substring(0, 1)).join("");
             grades[id].push(new Grade(gradeData[i], Number(gradeData[i + 2]), gradeData[i + 1], weight, Number(gradeData[i + 3]), Number(gradeData[i + 4])));
         }
-        actualGrades[classArr[classArr.indexOf(id) + 1]] = [new Average().getAverage(grades[id]), JSON.stringify(grades[id])];
+        actualGrades[classArr[classArr.indexOf(id) + 1]] = [new Average().getAverage(grades[id], dgWeight, raWeight, mgWeight), JSON.stringify(grades[id]), dgWeight, raWeight, mgWeight];
     }
+
+    await page.goto("https://home-access.cfisd.net/HomeAccess/Grades/Transcript");
+    await page.waitForLoadState("domcontentloaded");
+    let GPA = (await page.$("plnMain_rpTranscriptGroup_lblGPACum1"));
+    if (GPA)
+        GPA = await GPA.innerText();
+    let Rank = (await page.$("plnMain_rpTranscriptGroup_lblGPARank1"));
+    if (Rank)
+        Rank = await Rank.innerText();
+
     await browser.close();
-    return { data: actualGrades, status: 200 };
+    return { data: actualGrades, status: 200, name: name, gpa: GPA, rank: Rank };
 }
 
 async function runner(user, pass) {
